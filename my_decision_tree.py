@@ -7,12 +7,12 @@ class MyDecisionTree:
     def __init__(self):
         self.attr_dict = None
 
-    def generate_tree(self, pd_data, labels, idea='ID3'):
+    def generate_tree(self, pd_data, labels, name='ID3'):
         """
         生成决策树（字典形式）
         :param pd_data: pandas格式的训练数据，最后一列为类别标签
         :param labels: 列表格式数据，与pd_data列名对应，为特征名称
-        :param labels: 字符串数据，可选有['ID3', 'C4.5']，生成决策树的方法
+        :param name: 字符串数据，可选有['ID3', 'C4.5']，生成决策树的方法
         :return: 字典格式数据
         """
         if self.attr_dict is None:
@@ -26,7 +26,7 @@ class MyDecisionTree:
             return list(class_dict.keys())[0]
 
         # 寻找最适合作为划分的属性
-        optimal_attr = self.find_optimal_attr(pd_data, labels, idea)
+        optimal_attr = self.find_optimal_attr(pd_data, labels, name)
         attr_dict = dict(Counter(pd_data[optimal_attr]))
         labels.remove(optimal_attr)
 
@@ -44,24 +44,24 @@ class MyDecisionTree:
                 # 如果子集为空，则选择当前样本集中样本最多的类作为分类结果
                 my_tree_dict[optimal_attr][attr_value] = max(class_dict, key=lambda k: class_dict.get(k))
             else:
-                my_tree_dict[optimal_attr][attr_value] = self.generate_tree(sub_pd_data, sub_labels, idea)
+                my_tree_dict[optimal_attr][attr_value] = self.generate_tree(sub_pd_data, sub_labels, name)
 
         return my_tree_dict
 
-    def find_optimal_attr(self, pd_data, labels, idea):
+    def find_optimal_attr(self, pd_data, labels, name):
         """
         寻找最佳划分属性
         :param pd_data: pandas格式的训练数据，最后一列为类别标签
         :param labels: 列表格式数据，与pd_data列名对应，为特征名称
-        :param labels: 字符串数据，可选有['ID3', 'C4.5']，生成决策树的方法
+        :param name: 字符串数据，可选有['ID3', 'C4.5']，生成决策树的方法
         :return: 字典格式数据
         """
-        if idea == 'ID3':
+        if name == 'ID3':
             return self.find_optimal_attr_by_entropy(pd_data, labels)
-        elif idea == 'C4.5':
+        elif name == 'C4.5':
             return self.find_optimal_attr_by_entropy_ratio(pd_data, labels)
         else:
-            raise ("argument idea must is 'ID3' or 'C4.5'")
+            raise ("argument name must is 'ID3' or 'C4.5'")
 
     def find_optimal_attr_by_entropy_ratio(self, pd_data, labels):
         """

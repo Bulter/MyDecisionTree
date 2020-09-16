@@ -1,6 +1,7 @@
 # 绘制决策树
 import matplotlib.pyplot as plt
 from pylab import mpl
+from sklearn.model_selection import KFold
 
 mpl.rcParams['font.sans-serif'] = ['FangSong'] # 指定默认字体
 mpl.rcParams['axes.unicode_minus'] = False # 解决保存图像是负号'-'显示为方块的问题
@@ -83,3 +84,12 @@ def createPlot(inTree):
     plotTree.yOff = 1.0;
     plotTree(inTree, (0.5, 1.0), '')
     plt.show()
+
+
+# K折交叉验证：将数据按索引顺序均分为k = n_splits份，每次迭代取其中1份作为测试数据，另外k-1份作为训练数据直至每一份均作为测试数据测试过；
+# 若shuffle=True则在划分之前将数据集随机打乱，然后再开始按索引划分；示例如下：
+data = list(range(50))
+kf = KFold(n_splits=5, shuffle=False)
+for train_data_index, test_data_index in kf.split(data):
+    print(len(data), len(train_data_index), len(test_data_index))
+    print(test_data_index)
